@@ -18,6 +18,7 @@ class Bayarcash
 
     /*
      * Payment Channels
+     * @deprecated Use Webimpian\BayarcashSdk\Enums\PaymentChannel instead
      */
     const FPX = 1;
     const MANUAL_TRANSFER = 2;
@@ -32,7 +33,7 @@ class Bayarcash
     const NETS = 11;
 
     /**
-     * The Bayarcash API Key.
+     * The Bayarcash Personal Access Token.
      *
      * @var string
      */
@@ -69,7 +70,7 @@ class Bayarcash
     /**
      * Create a new BayarcashSdk instance.
      *
-     * @param  string|null  $token
+     * @param  string  $token  Your BayarCash Personal Access Token
      * @return void
      */
     public function __construct(string $token)
@@ -182,9 +183,9 @@ class Bayarcash
     }
 
     /**
-     * Get the base URI based on the API version and environment.
+     * Get base URI for API requests based on the API version and environment.
      *
-     * @return string
+     * @return string The base URI for API requests
      */
     private function getBaseUri()
     {
@@ -197,6 +198,20 @@ class Bayarcash
         return $this->sandbox
             ? 'https://console.bayarcash-sandbox.com/api/v2/'
             : 'https://console.bayar.cash/api/v2/';
+    }
+
+    /**
+     * Verify webhook signature to ensure it came from BayarCash
+     *
+     * @param string $signature The signature from X-Bayarcash-Signature header
+     * @param string $payload The raw webhook payload
+     * @param string $secretKey Your BayarCash secret key
+     * @return bool Whether the signature is valid
+     */
+    public function verifyWebhookSignature(string $signature, string $payload, string $secretKey): bool
+    {
+        $calculatedSignature = hash_hmac('sha256', $payload, $secretKey);
+        return hash_equals($calculatedSignature, $signature);
     }
 
     /**

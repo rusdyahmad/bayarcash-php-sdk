@@ -2,9 +2,19 @@
 
 namespace Webimpian\BayarcashSdk\Actions;
 
+/**
+ * Trait for generating checksum values for various BayarCash operations
+ */
 trait ChecksumGenerator
 {
-    public function createChecksumValue($secretKey, $payload)
+    /**
+     * Create a generic checksum value from a payload
+     *
+     * @param string $secretKey The secret key for HMAC generation
+     * @param array $payload The data payload to generate checksum from
+     * @return string The generated checksum
+     */
+    public function createChecksumValue(string $secretKey, array $payload): string
     {
         ksort($payload);
         $payloadString = implode('|', $payload);
@@ -12,13 +22,27 @@ trait ChecksumGenerator
         return hash_hmac('sha256', $payloadString, $secretKey);
     }
 
-    // Old typo version, kept for backward compatibility
-    public function createPaymentIntenChecksumValue($secretKey, $data)
+    /**
+     * Create a payment intent checksum value (with typo for backward compatibility)
+     *
+     * @param string $secretKey The secret key for HMAC generation
+     * @param array $data The payment intent data
+     * @return string The generated checksum
+     * @deprecated Use createPaymentIntentChecksumValue instead
+     */
+    public function createPaymentIntenChecksumValue(string $secretKey, array $data): string
     {
         return $this->createPaymentIntentChecksumValue($secretKey, $data);
     }
 
-    public function createPaymentIntentChecksumValue($secretKey, $data)
+    /**
+     * Create a payment intent checksum value
+     *
+     * @param string $secretKey The secret key for HMAC generation
+     * @param array $data The payment intent data containing payment_channel, order_number, amount, payer_name, etc.
+     * @return string The generated checksum
+     */
+    public function createPaymentIntentChecksumValue(string $secretKey, array $data): string
     {
         $payload = [
             'payment_channel' => $data['payment_channel'],
@@ -28,13 +52,17 @@ trait ChecksumGenerator
             'payer_email' => $data['payer_email'],
         ];
 
-        ksort($payload);
-        $payloadString = implode('|', $payload);
-
-        return hash_hmac('sha256', $payloadString, $secretKey);
+        return $this->createChecksumValue($secretKey, $payload);
     }
 
-    public function createFpxDIrectDebitEnrolmentChecksumValue($secretKey, $data)
+    /**
+     * Create an FPX Direct Debit enrollment checksum value (original naming with typo)
+     * 
+     * @param string|mixed $secretKey The secret key for HMAC generation
+     * @param array $data The enrollment data
+     * @return string The generated checksum
+     */
+    public function createFpxDIrectDebitEnrolmentChecksumValue($secretKey, array $data)
     {
         $payload = [
             'order_number' => $data['order_number'],
@@ -48,13 +76,29 @@ trait ChecksumGenerator
             'frequency_mode' => $data['frequency_mode'],
         ];
 
-        ksort($payload);
-        $payloadString = implode('|', $payload);
-
-        return hash_hmac('sha256', $payloadString, $secretKey);
+        return $this->createChecksumValue($secretKey, $payload);
+    }
+    
+    /**
+     * Create an FPX Direct Debit enrollment checksum value (corrected naming)
+     * 
+     * @param string|mixed $secretKey The secret key for HMAC generation
+     * @param array $data The enrollment data
+     * @return string The generated checksum
+     */
+    public function createFpxDirectDebitEnrollmentChecksumValue($secretKey, array $data)
+    {
+        return $this->createFpxDIrectDebitEnrolmentChecksumValue($secretKey, $data);
     }
 
-    public function createFpxDIrectDebitMaintenanceChecksumValue($secretKey, $data)
+    /**
+     * Create an FPX Direct Debit maintenance checksum value (original naming with typo)
+     * 
+     * @param string|mixed $secretKey The secret key for HMAC generation
+     * @param array $data The maintenance data
+     * @return string The generated checksum
+     */
+    public function createFpxDIrectDebitMaintenanceChecksumValue($secretKey, array $data)
     {
         $payload = [
             'amount' => $data['amount'],
@@ -64,9 +108,18 @@ trait ChecksumGenerator
             'frequency_mode' => $data['frequency_mode'],
         ];
 
-        ksort($payload);
-        $payloadString = implode('|', $payload);
-
-        return hash_hmac('sha256', $payloadString, $secretKey);
+        return $this->createChecksumValue($secretKey, $payload);
+    }
+    
+    /**
+     * Create an FPX Direct Debit maintenance checksum value (corrected naming)
+     * 
+     * @param string|mixed $secretKey The secret key for HMAC generation
+     * @param array $data The maintenance data
+     * @return string The generated checksum
+     */
+    public function createCorrectFpxDirectDebitMaintenanceChecksumValue($secretKey, array $data)
+    {
+        return $this->createFpxDIrectDebitMaintenanceChecksumValue($secretKey, $data);
     }
 }

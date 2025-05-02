@@ -1,8 +1,37 @@
+# Dependencies
 /vendor
-src/.DS_Store
+composer.phar
+
+# IDE and editor files
+/.idea
+/.vscode
+/.phpstorm.meta.php
+*.sublime-*
+
+# OS generated files
 .DS_Store
-.idea/bayarcash-php-sdk.iml
-.idea/modules.xml
-.idea/php.xml
-.idea/vcs.xml
-.idea/workspace.xml
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PHPUnit
+/.phpunit.result.cache
+/.phpunit.cache
+
+# Environment files
+.env
+.env.backup
+
+# Logs
+*.log
+
+# Sensitive or temporary files
+*.key
+*.pem
+*.tmp
+*.bak
+*.swp
+*~

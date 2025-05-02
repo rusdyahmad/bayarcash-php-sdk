@@ -26,4 +26,5 @@ class TransactionResource extends Resource
     public ?string $portal = null;
     public ?array $merchant = null;
     public ?array $mandate = null;
+    public ?array $data = null;
 }
